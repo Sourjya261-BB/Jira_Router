@@ -1,6 +1,8 @@
 
 # 🔮 Jira Ticket Assignment Predictor
 
+![image](https://github.com/user-attachments/assets/696a9286-ee07-476e-811a-5e7c501da406)
+
 This project provides a model to predict the **assignment team** for a Jira ticket based on its **summary** and **description**. It supports both interactive predictions and batch evaluations via a test mode.
 
 ## 🚀 Features
