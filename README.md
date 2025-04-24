@@ -1,5 +1,6 @@
 ```markdown
 # 🔮 Jira Ticket Assignment Predictor
+![alt text](image.png)
 
 This project provides a model to predict the **assignment team** for a Jira ticket based on its **summary** and **description**. It supports both interactive predictions and batch evaluations via a test mode.
 
