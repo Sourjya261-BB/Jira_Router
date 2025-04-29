@@ -1,0 +1,47 @@
+name: PR-Agent 
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+jobs:
+  pr_agent_job:
+    # Only run on PR comments or if the event is a PR event, and not from a bot
+    if: |
+      (github.event.sender.type != 'Bot') && 
+      (github.event_name == 'pull_request' || 
+       (github.event_name == 'issue_comment' && github.event.issue.pull_request))
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+    name: Run pr agent on every pull request, respond to user comments
+    steps:
+      - name: PR Agent action step
+        id: pragent
+        uses: qodo-ai/pr-agent@main
+        with:
+          args: |
+            --pr_url ${{ github.event.pull_request.html_url }}
+            review
+        env:
+          openai.api_base: ${{ secrets.OPENAI_API_BASE }}
+          openai.deployment_id: ${{ secrets.OPENAI_DEPLOYMENT_ID }}
+          openai.api_version: ${{ secrets.OPENAI_API_VERSION }}
+          CONFIG.model: ${{ secrets.CONFIG_MODEL }}
+          BEST_PRACTICES.content: ${{ secrets.BEST_PRACTICES_CONTENT }}
+          PR_REVIEWER.extra_instructions: ${{ secrets.PR_REVIEWER_EXTRA_INSTRUCTIONS }}
+          PR_CODE_SUGGESTIONS.extra_instructions: ${{ secrets.PR_CODE_SUGGESTIONS_EXTRA_INSTRUCTIONS }}
+          PR_REVIEWER.inline_code_comments: "true"
+          PR_REVIEWER.num_code_suggestions: 10
+          PR_CODE_SUGGESTIONS.commitable_code_suggestions: "true"
+          PR_CODE_SUGGESTIONS.max_number_of_calls: 10
+          PR_CODE_SUGGESTIONS.num_code_suggestions: 20
+          PR_CODE_SUGGESTIONS.dual_publishing_score_threshold: 0.5
+          PR_REVIEWER.max_context_tokens: 10000
+          openai.api_type: "azure"
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
